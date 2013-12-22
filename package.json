@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/gvarsanyi/config-ini/issues"
   },
-  "homepage": "https://github.com/gvarsanyi/config-ini"
+  "homepage": "https://github.com/gvarsanyi/config-ini",
+  "dependencies": {
+    "iniparser": "~1.0.5"
+  },
+  "devDependencies": {}
 }

@@ -1,11 +1,7 @@
 fs        = require 'fs'
 iniparser = require 'iniparser'
 
-module.exports.load = (file, callback) ->
-  if not callback?
-    callback = file
-    file = 'config.ini'
-
+module.exports.load = (callback) ->
   load = (file, cb) ->
     fs.readFile file, 'utf8', (err, data) ->
       if not err

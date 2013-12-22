@@ -6,12 +6,8 @@
 
   iniparser = require('iniparser');
 
-  module.exports.load = function(file, callback) {
+  module.exports.load = function(callback) {
     var load;
-    if (callback == null) {
-      callback = file;
-      file = 'config.ini';
-    }
     load = function(file, cb) {
       return fs.readFile(file, 'utf8', function(err, data) {
         var config, k, section, v, values;
