@@ -1,17 +1,27 @@
-fs        = require 'fs'
-iniparser = require 'iniparser'
+file_load = require './lib/file_load'
 
-module.exports.load = (callback) ->
-  load = (file, cb) ->
-    fs.readFile file, 'utf8', (err, data) ->
-      if not err
-        config = iniparser.parseString data
-        for section, values of config
-          module.exports[section] = module.exports[section] or {}
-          (module.exports[section][k] = v) for k, v of values
-      cb()
+removable_loader = module.exports.load = ->
+  # arguments
+  config_files  = []
+  fail_silently = true
+  for arg in arguments
+    switch typeof arg
+      when 'boolean'  then fail_silently = arg
+      when 'function' then callback      = arg
+      when 'object'
+        config_files = arg if arg.length and arg.push and arg.shift
 
-  load 'config.ini', ->
-    load 'config.dev.ini', ->
-      delete module.exports.load if typeof module.exports.load is 'function'
-      callback() if typeof callback is 'function'
+  for arg in process.argv
+    if arg.substr(0, 9) is '--config=' and arg.length > 9
+      config_files.push arg.substr 9
+
+  config_files.push 'config.ini' unless config_files.length
+
+  next = ->
+    if config_files.length
+      return file_load module.exports, config_files.shift(), fail_silently, next
+
+    delete module.exports.load if module.exports.load is removable_loader
+    callback() if typeof callback is 'function'
+
+  next()
