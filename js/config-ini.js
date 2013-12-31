@@ -4,38 +4,37 @@
 
   file_load = require('./lib/file_load');
 
-  removable_loader = module.exports.load = function() {
-    var arg, callback, config_files, fail_silently, next, _i, _j, _len, _len1, _ref;
-    config_files = [];
-    fail_silently = true;
-    for (_i = 0, _len = arguments.length; _i < _len; _i++) {
-      arg = arguments[_i];
-      switch (typeof arg) {
-        case 'boolean':
-          fail_silently = arg;
-          break;
-        case 'function':
-          callback = arg;
-          break;
-        case 'object':
-          if (arg.length && arg.push && arg.shift) {
-            config_files = arg;
-          }
-      }
+  removable_loader = module.exports.load = function(config_files, callback) {
+    var arg, next, _i, _len, _ref;
+    if (config_files == null) {
+      config_files = [];
+    }
+    if ((callback == null) && typeof config_files === 'function') {
+      callback = config_files;
+      config_files = [];
     }
     _ref = process.argv;
-    for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-      arg = _ref[_j];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      arg = _ref[_i];
       if (arg.substr(0, 9) === '--config=' && arg.length > 9) {
         config_files.push(arg.substr(9));
       }
     }
+    if (typeof config_files === 'string') {
+      config_files = [config_files];
+    }
     if (!config_files.length) {
       config_files.push('config.ini');
     }
-    next = function() {
+    next = function(err) {
+      if (err) {
+        if (typeof callback === 'function') {
+          return callback(err);
+        }
+        return;
+      }
       if (config_files.length) {
-        return file_load(module.exports, config_files.shift(), fail_silently, next);
+        return file_load(module.exports, config_files.shift(), next);
       }
       if (module.exports.load === removable_loader) {
         delete module.exports.load;

@@ -6,7 +6,7 @@
 
   iniparser = require('iniparser');
 
-  module.exports = function(exporter, file, fail_silently, cb) {
+  module.exports = function(exporter, file, cb) {
     return fs.readFile(file, 'utf8', function(err, data) {
       var config, k, section, v, values;
       if (!err) {
@@ -19,8 +19,8 @@
             exporter[section][k] = v;
           }
         }
-      } else if (!fail_silently) {
-        throw new Error('File not found: ' + file);
+      } else {
+        cb(err);
       }
       return cb();
     });
