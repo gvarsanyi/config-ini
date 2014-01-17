@@ -10,6 +10,7 @@ module.exports = (exporter, file, callback) ->
       for section, values of config
         exporter[section] = exporter[section] or {}
         exporter[section][k] = v for k, v of values
-      callback()
     catch err
-      callback err
+      return callback err
+
+    callback()

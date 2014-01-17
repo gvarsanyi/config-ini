@@ -22,11 +22,11 @@
             exporter[section][k] = v;
           }
         }
-        return callback();
       } catch (_error) {
         err = _error;
         return callback(err);
       }
+      return callback();
     });
   };
 

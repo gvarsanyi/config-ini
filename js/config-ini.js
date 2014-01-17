@@ -4,18 +4,23 @@
 
   file_load = require('./lib/file_load');
 
-  removable_loader = module.exports.load = function(config_files, callback) {
-    var arg, next, _i, _len, _ref;
-    if (config_files == null) {
-      config_files = [];
+  removable_loader = module.exports.load = function(files, callback) {
+    var arg, config_files, file, next, _i, _j, _len, _len1, _ref;
+    if (files == null) {
+      files = [];
     }
-    if ((callback == null) && typeof config_files === 'function') {
-      callback = config_files;
-      config_files = [];
+    if ((callback == null) && typeof files === 'function') {
+      callback = files;
+      files = [];
+    }
+    config_files = [];
+    for (_i = 0, _len = files.length; _i < _len; _i++) {
+      file = files[_i];
+      config_files.push(file);
     }
     _ref = process.argv;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      arg = _ref[_i];
+    for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+      arg = _ref[_j];
       if (arg.substr(0, 9) === '--config=' && arg.length > 9) {
         config_files.push(arg.substr(9));
       }

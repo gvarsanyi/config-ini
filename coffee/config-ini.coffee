@@ -1,10 +1,12 @@
 file_load = require './lib/file_load'
 
-removable_loader = module.exports.load = (config_files=[], callback) ->
-  if not callback? and typeof config_files is 'function'
-    callback     = config_files
-    config_files = []
+removable_loader = module.exports.load = (files=[], callback) ->
+  if not callback? and typeof files is 'function'
+    callback = files
+    files    = []
 
+  config_files = []
+  config_files.push(file) for file in files
   for arg in process.argv
     if arg.substr(0, 9) is '--config=' and arg.length > 9
       config_files.push arg.substr 9
